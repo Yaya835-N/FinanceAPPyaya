@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  consul:
+    image: consul:1.14
+    command: consul agent -dev -client=0.0.0.0
+    ports:
+      - "8500:8500"
+    networks:
+      - app-net
+
+  apotek:
+    build: ./app
+    ports:
+      - "8501:8501"
+    networks:
+      - app-net
+    depends_on:
+      - consul
+    environment:
+      CONSUL_HOST: consul
+
+networks:
+  app-net:
+    driver: bridge
